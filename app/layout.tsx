@@ -15,7 +15,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full">
-      
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>LaHu Blog</title>
+      </head>
       <body className="min-h-screen flex flex-col bg-gradient-to-br from-blue-900/95 via-pink-700/90 to-pink-900/90">
         <NavBar />
         <main className="flex-1 pt-20 pb-12"> {/* Add padding for fixed navbar */}
