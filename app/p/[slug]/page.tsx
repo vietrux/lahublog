@@ -6,10 +6,6 @@ import { NotionRenderer } from "@notion-render/client";
 import hljsPlugin from "@notion-render/hljs-plugin";
 import bookmarkPlugin from "@notion-render/bookmark-plugin";
 
-import Link from "next/link";
-
-import Image from "next/image";
-
 interface PostData {
   id: string;
   title: string;
@@ -18,14 +14,6 @@ interface PostData {
   image_url: string;
   slug: string;
   author: string;
-}
-
-interface MorePost {
-  title: string;
-  date: string;
-  excerpt: string;
-  image_url: string;
-  slug: string;
 }
 
 export default function PostPage() {

@@ -1,3 +1,4 @@
+import Link from 'next/link';
 export default function NavBar() {
     return (
       <nav className="fixed w-full top-0 z-50 bg-white/5 backdrop-blur-xl border-b border-white/10">
@@ -5,12 +6,12 @@ export default function NavBar() {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex-shrink-0">
-              <a 
+              <Link
                 href="/" 
                 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-pink-400 bg-clip-text text-transparent"
               >
                 LaHu Blog
-              </a>
+              </Link>
             </div>
   
           </div>

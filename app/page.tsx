@@ -2,9 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { Post } from "@/types/Post";
-import Link from "next/link";
-
-
 
 interface NotionPage {
 
@@ -23,7 +20,6 @@ interface NotionPage {
 }
 
 export default function Home() {
-  const [category, setCategory] = useState("All");
   const [posts, setPosts] = useState([] as Post[]);
   const [loading, setLoading] = useState(true);
 
@@ -53,7 +49,7 @@ export default function Home() {
         setPosts(transformedPosts);
         setLoading(false);
       });
-  }, [category]);
+  }, []);
 
   return (
     <div className="p-8">
