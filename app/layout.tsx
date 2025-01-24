@@ -19,6 +19,7 @@ export default function RootLayout({
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>LaHu Blog</title>
+        <link rel="icon" href="/favicon.ico" />
       </head>
       <body className="min-h-screen flex flex-col bg-gradient-to-br from-blue-900/95 via-pink-700/90 to-pink-900/90">
         <NavBar />
