@@ -1,84 +1,96 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { fetchBySlug, fetchPagesBlocks, notion } from "@/lib/notion";
+import bookmarkPlugin from "@notion-render/bookmark-plugin";
 import { NotionRenderer } from "@notion-render/client";
 import hljsPlugin from "@notion-render/hljs-plugin";
-import bookmarkPlugin from "@notion-render/bookmark-plugin";
+import { Metadata } from "next";
 
-interface PostData {
-  id: string;
-  title: string;
-  date: string;
-  tags: string[];
-  image_url: string;
-  slug: string;
-  author: string;
+export const dynamic = "force-dynamic";
+
+export async function generateMetadata(props: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await props.params;
+  const page = await fetchBySlug(Array.isArray(slug) ? slug[0] : slug || "");
+
+  if (!page) return { title: "Not Found" };
+
+  const title = (
+    page.properties.Name as { title: Array<{ text: { content: string } }> }
+  ).title[0]?.text.content;
+  const description =
+    (
+      page.properties.Description as {
+        rich_text: Array<{ plain_text: string }>;
+      }
+    )?.rich_text[0]?.plain_text || "";
+  const publishedTime = (page.properties.Date as { created_time: string })
+    .created_time;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "article",
+      publishedTime,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+  };
 }
 
-export default function PostPage() {
-  const params = useParams();
-  const slug = params?.slug as string;
-  const [post, setPost] = useState<PostData | null>(null);
-  const [htmlContent, setHtmlContent] = useState("");
-  const [loading, setLoading] = useState(true);
+export default async function BlogPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
 
-  useEffect(() => {
-    if (!slug) return;
-
-    const fetchData = async () => {
-      try {
-        // Fetch main post data
-        const postRes = await fetch(`/api?action=getBySlug&slug=${slug}`);
-        const postData = await postRes.json();
-
-        // Fetch blocks and render
-        const blocksRes = await fetch(
-          `/api?action=getBlocks&pageId=${postData.id}`
-        );
-        const blocks = await blocksRes.json();
-
-        // Initialize renderer
-        const renderer = new NotionRenderer();
-        renderer.use(hljsPlugin({}));
-        renderer.use(bookmarkPlugin(undefined));
-        const html = await renderer.render(...blocks);
-
-        setPost(postData);
-        setHtmlContent(html);
-        console.log(html);
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [slug]);
-
-  if (loading) {
-    return (
-      <div className="w-full h-[80vh] flex justify-center items-center">
-        Loading...
-      </div>
-    );
+  if (!slug) {
+    return <div>Invalid slug</div>;
   }
 
-  if (!post) {
-    return (
-      <div className="w-full h-[80vh] flex justify-center items-center">
-        Page not found
-      </div>
-    );
+  const page = await fetchBySlug(slug);
+  if (!page) {
+    return <div>Not found</div>;
   }
+
+  const blocks = await fetchPagesBlocks(page.id);
+  const renderer = new NotionRenderer({
+    client: notion,
+  });
+
+  renderer.use(hljsPlugin({}));
+  renderer.use(bookmarkPlugin(undefined));
+
+  const html = await renderer.render(...blocks);
+
+  const title = (
+    page.properties.Name as { title: Array<{ text: { content: string } }> }
+  ).title[0]?.text.content;
+  const publishedTime = (page.properties.Date as { created_time: string })
+    .created_time;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: title,
+    datePublished: publishedTime,
+  };
+
   return (
-    
-    <div className="backdrop-blur-md bg-white/30 dark:bg-black/30 rounded-xl shadow-lg p-6 border border-white/20 mx-8">
-      <div
-        className="prose notion-render"
-        dangerouslySetInnerHTML={{ __html: htmlContent }}
-      ></div>
+    <>
+    <div className="p-8 bg-black/10 m-8 rounded-2xl shadow-lg backdrop-blur-sm">
+      <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <div className="prose notion-render" dangerouslySetInnerHTML={{ __html: html }} />
     </div>
+    </>
   );
 }

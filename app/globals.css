@@ -2,107 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
-
 html {
   color: white;
 }
 
-.prose {
-  --tw-prose-body: theme(colors.white/80);
-  --tw-prose-headings: theme(colors.white);
-  --tw-prose-links: theme(colors.pink.400);
-  --tw-prose-code: theme(colors.pink.300);
-  --tw-prose-quote-borders: theme(colors.pink.500/50);
+:root {
+  --themeBlue: rgba(173, 216, 230, 0.2);      /* Light blue with transparency */
+  --themePink: rgba(255, 192, 203, 0.2);      /* Light pink with transparency */
+  --text: 255, 255, 255;                      /* White text */
+  --border: rgba(255, 255, 255, 0.15);        /* Subtle border */
 }
 
+/* Modified prose colors */
+.prose {
+  --tw-prose-body: theme(colors.white/90);
+  --tw-prose-headings: theme(colors.white);
+  --tw-prose-links: theme(colors.pink.300);
+  --tw-prose-code: theme(colors.blue.300);
+  --tw-prose-quote-borders: theme(colors.pink.400/50);
+}
+
+
+/* Updated syntax highlighting */
 .hljs {
-  display: block;
-  overflow-x: auto;
-  padding: 0.5em;
-  background: #ffffff; 
-  color: #333333; 
+  background: rgba(147, 197, 253, 0.15) !important;  /* Light blue background */
+  color: #e5e7eb !important;
+  border: 1px solid rgba(219, 39, 119, 0.2);
 }
 
 .hljs-comment,
 .hljs-quote {
-  color: #008000; 
-  font-style: italic;
+  color: #93C5FD; /* Light blue */
 }
 
 .hljs-keyword,
-.hljs-selector-tag,
-.hljs-subst {
-  color: #0000ff; 
-}
-
-.hljs-literal,
-.hljs-number,
-.hljs-tag .hljs-attr {
-  color: #800080; 
+.hljs-selector-tag {
+  color: #F472B6; /* Pink */
 }
 
 .hljs-string,
 .hljs-doctag {
-  color: #a31515; 
+  color: #93C5FD; /* Light blue */
 }
 
 .hljs-title,
-.hljs-section,
-.hljs-selector-id {
-  color: #2b91af; 
+.hljs-section {
+  color: #60A5FA; /* Medium blue */
 }
 
-.hljs-subst {
-  font-weight: normal;
-}
-
-.hljs-type,
-.hljs-class .hljs-title {
-  color: #2b91af; 
-}
-
-.hljs-tag,
-.hljs-name,
-.hljs-attribute {
-  color: #800000; 
-}
-
-.hljs-regexp,
-.hljs-link {
-  color: #d16969; 
-}
-
-.hljs-symbol,
-.hljs-bullet {
-  color: #b8860b; 
-}
-
-.hljs-built_in,
-.hljs-builtin-name {
-  color: #ff4500; 
-}
-
-.hljs-meta {
-  color: #1e90ff; 
-}
-
-.hljs-deletion {
-  background: #ffdddd; 
-  color: #a00000; 
-}
-
-.hljs-addition {
-  background: #ddffdd; 
-  color: #006400; 
-}
-
-.hljs-emphasis {
-  font-style: italic;
-}
-
-.hljs-strong {
-  font-weight: bold;
-}
 
 
 .notion-render a.notion-bookmark {
@@ -194,9 +141,10 @@ html {
   padding: 3px 2px;
 }
 .notion-render div.notion-code pre code {
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
   display: block;
   padding: 16px 8px 16px 16px;
-  background-color: var(--bg);
   border: 1px solid var(--text);
   border-radius: 3px;
   overflow-x: auto;
